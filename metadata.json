@@ -1,0 +1,8 @@
+{
+  "name": "Physica AI - Secondary 2 Physics Teacher",
+  "description": "An intelligent AI physics teacher specialized in the Egyptian 2nd Secondary Grade curriculum, offering detailed explanations, interactive quizzes, and live audio communication in Arabic and English.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
