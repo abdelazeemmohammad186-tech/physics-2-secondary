@@ -34,7 +34,6 @@ export class GeminiService {
   public async generatePhysicsDrawing(prompt: string): Promise<{ text: string, imageUrl?: string }> {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
     
-    // First, get the explanation and the image generation prompt
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: `المطلوب: رسم توضيحي لموضوع: ${prompt}. 
@@ -45,7 +44,6 @@ export class GeminiService {
 
     const text = response.text || "";
 
-    // Now, generate the actual image using gemini-2.5-flash-image
     const imageResponse = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
       contents: {
@@ -82,14 +80,16 @@ export class GeminiService {
         this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
       }
 
-      // Clean up text and ensure clear punctuation, remove all markdown/distracting symbols
       const cleanText = text.replace(/[*#_$~]/g, '').trim();
 
+      // CRITICAL UPDATE: Explicit instruction for constant speed and preventing acceleration.
       const ttsInstruction = `
-        التزمي بنبرة صوت معلمة فيزياء وقورة وواضحة. 
-        تحدثي برتم "طبيعي ومعتدل" (Natural and balanced speed). 
-        يجب ألا يكون الحديث بطيئاً جداً يبعث على الملل، ولا سريعاً جداً يصعب تتبعه. 
-        النص المراد قراءته هو: ${cleanText}
+        أنتِ معلمة فيزياء وقورة. 
+        المهمة: قراءة النص برتم "طبيعي ومعتدل وثابت تماماً" (Strictly Constant and Balanced Pace). 
+        قاعدة صارمة: يُمنع منعاً باتاً زيادة سرعة الكلام في منتصف النص أو نهايته. 
+        يجب أن تكون السرعة في أول جملة هي نفس السرعة في آخر جملة دون أي انحراف. 
+        تحدثي بوضوح تام وهدوء مستمر دون تسرع.
+        النص هو: ${cleanText}
       `;
 
       const response = await this.ai.models.generateContent({
